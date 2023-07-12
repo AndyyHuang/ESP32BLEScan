@@ -17,14 +17,11 @@ class MyAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks {
         std::string payload = byteArrayToHexString(advertisedDevice.getPayload(), advertisedDevice.getPayloadLength());
         int rssi = advertisedDevice.getRSSI();
         std::string mac = advertisedDevice.getAddress().toString();
-
-        if (rssi >= -45) {
-          Serial.printf("~%s\t%s\t%i\t%s\n", mac.c_str(), time.c_str(), rssi, payload.c_str());
-        }
+        Serial.printf("~%s\t%s\t%i\t%s\n", mac.c_str(), time.c_str(), rssi, payload.c_str());
       }
     }
 
-// Resets time upon crash.
+// Time resets upon boot.
      std::string getTime() {
        int elapsed = millis();
        int milliseconds = elapsed % 1000;
@@ -40,7 +37,7 @@ class MyAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks {
        return oss.str();
      }
 
-// Continues displaying elapsed time even after a crash.
+// Continues displaying elapsed time even after reboot.
 //    std::string getTime() {
 //      // Get the current time with milliseconds
 //      auto currentTime = std::chrono::system_clock::now();
