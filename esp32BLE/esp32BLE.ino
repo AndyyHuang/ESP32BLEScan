@@ -12,7 +12,6 @@ BLEScan* pBLEScan;
 
 class MyAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks {
     void onResult(BLEAdvertisedDevice advertisedDevice) {
-      std::string otherTime = getOtherTime();
       std::string time = getTime();
       if (advertisedDevice.haveManufacturerData() && isApple(advertisedDevice) && advertisedDevice.haveRSSI()) {
         std::string payload = byteArrayToHexString(advertisedDevice.getPayload(), advertisedDevice.getPayloadLength());
@@ -20,12 +19,13 @@ class MyAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks {
         std::string mac = advertisedDevice.getAddress().toString();
 
         if (rssi >= -45) {
-          Serial.printf("~%s\t%s\t%s\t%i\t%s\n", mac.c_str(), time.c_str(), otherTime.c_str(), rssi, payload.c_str());
+          Serial.printf("~%s\t%s\t%i\t%s\n", mac.c_str(), time.c_str(), rssi, payload.c_str());
         }
       }
     }
 
-     std::string getOtherTime() {
+// Resets time upon crash.
+     std::string getTime() {
        int elapsed = millis();
        int milliseconds = elapsed % 1000;
        int seconds = (int) floor(elapsed / 1000.0) % 60;
@@ -40,22 +40,23 @@ class MyAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks {
        return oss.str();
      }
 
-    std::string getTime() {
-      // Get the current time with milliseconds
-      auto currentTime = std::chrono::system_clock::now();
-      auto currentTimeMs = std::chrono::duration_cast<std::chrono::milliseconds>(
-          currentTime.time_since_epoch()
-      ).count() % 1000;
-
-      // Convert the current time to a string format with milliseconds
-      std::time_t currentTimeSec = std::chrono::system_clock::to_time_t(currentTime);
-      std::tm* timeinfo = std::gmtime(&currentTimeSec);
-      std::stringstream ss;
-      ss << std::put_time(timeinfo, "%H:%M:%S");
-      ss << "." << std::setfill('0') << std::setw(3) << currentTimeMs;
-      std::string timeString = ss.str();
-      return timeString;
-    }
+// Continues displaying elapsed time even after a crash.
+//    std::string getTime() {
+//      // Get the current time with milliseconds
+//      auto currentTime = std::chrono::system_clock::now();
+//      auto currentTimeMs = std::chrono::duration_cast<std::chrono::milliseconds>(
+//          currentTime.time_since_epoch()
+//      ).count() % 1000;
+//
+//      // Convert the current time to a string format with milliseconds
+//      std::time_t currentTimeSec = std::chrono::system_clock::to_time_t(currentTime);
+//      std::tm* timeinfo = std::gmtime(&currentTimeSec);
+//      std::stringstream ss;
+//      ss << std::put_time(timeinfo, "%H:%M:%S");
+//      ss << ":" << std::setfill('0') << std::setw(3) << currentTimeMs;
+//      std::string timeString = ss.str();
+//      return timeString;
+//    }
 
     bool isApple(BLEAdvertisedDevice advertisedDevice) {
       std::string data = byteArrayToHexString((uint8_t*)advertisedDevice.getManufacturerData().data(), advertisedDevice.getManufacturerData().length());
