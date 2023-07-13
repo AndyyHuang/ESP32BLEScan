@@ -2,9 +2,9 @@ from serial import Serial
 
 BAUD = 115200
 PORT = '/dev/cu.usbserial-0001'
-PATH = 'scan_data/test.csv'
+PATH = 'scan_data/test_scan.csv'
 CSV_HEADER = 'mac_address,time_scanned,rssi,payload'
-WRITE_TIME = 30 # seconds
+WRITE_TIME = 10 * 60 # seconds
 
 # Returns time elapsed in seconds
 def time_elapsed(data: str) -> float:
@@ -23,7 +23,7 @@ def main():
     serial_port = Serial(PORT, BAUD)
     print("Listening on port: " + PORT + "...")
 
-    print("Writing to " + PATH)
+    print("Writing to " + PATH + "...")
     output_file = open(PATH, 'w')
     output_file.write(CSV_HEADER + "\n")
     output_file.flush()
@@ -43,6 +43,8 @@ def main():
                     data = data.replace("~", "").replace("\t", ",")
                     output_file.write(data)
                     output_file.flush()
+            else:
+                print(data)
 
 if __name__ == "__main__":
     main()

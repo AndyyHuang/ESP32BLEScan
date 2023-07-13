@@ -37,7 +37,7 @@ class MyAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks {
        return oss.str();
      }
 
-// Continues displaying elapsed time even after reboot.
+// Continues to display elapsed time even after reboot.
 //    std::string getTime() {
 //      // Get the current time with milliseconds
 //      auto currentTime = std::chrono::system_clock::now();
