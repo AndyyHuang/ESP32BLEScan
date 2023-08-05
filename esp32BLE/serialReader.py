@@ -2,7 +2,7 @@ from serial import Serial
 
 BAUD = 115200
 PORT = '/dev/cu.usbserial-0001'
-PATH = 'scan_data/test_scan.csv'
+PATH = 'scan_data/iphone_tapped.csv'
 CSV_HEADER = 'mac_address,time_scanned,rssi,payload'
 WRITE_TIME = 10 * 60 # seconds
 
@@ -38,7 +38,7 @@ def main():
                     output_file.close()
                     break
 
-                if (rssi(data) >= -35):
+                if (rssi(data) >= -30):
                     print(data)
                     data = data.replace("~", "").replace("\t", ",")
                     output_file.write(data)
